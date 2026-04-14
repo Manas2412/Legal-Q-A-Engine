@@ -23,3 +23,20 @@ This directory contains the FastAPI backend for the Legal Q&A Engine.
    ```bash
    fastapi dev main.py
    ```
+
+
+## Installation
+
+1. Create a virtual environment:
+   ```bash
+   uv venv
+   ```
+2. Activate the virtual environment:
+   ```bash
+   source .venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   uv pip install -r requirements.txt
+   ```
+
