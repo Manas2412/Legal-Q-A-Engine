@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: legal_qa_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: legal_qa
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d legal_qa"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+
+# ─────────────────────────────────────────────────────────────
+# NOTE: Ollama runs on your HOST machine (not in Docker) so it
+# can use your GPU. Install it from https://ollama.com and run:
+#
+#   ollama pull llama3
+#   ollama pull nomic-embed-text
+#
+# The backend connects to Ollama at http://localhost:11434 by default.
+# Override with OLLAMA_BASE_URL in your .env if needed.
+#
+# To run the backend itself:
+#   python run.py
+#   OR: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+# ─────────────────────────────────────────────────────────────
