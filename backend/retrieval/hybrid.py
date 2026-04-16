@@ -82,7 +82,8 @@ def dense_retrieve(
 
         where_clause = "WHERE " + " AND ".join(filters) if filters else ""
 
-        sql = text(f"""
+        sql = text(
+            f"""
             SELECT
                 id::text,
                 source_file,
@@ -100,7 +101,8 @@ def dense_retrieve(
             {where_clause}
             ORDER BY embedding <=> :embedding::vector
             LIMIT :top_k
-        """)
+        """
+        )
 
         rows = db.execute(sql, {"embedding": embedding_str, "top_k": top_k}).fetchall()
 
@@ -142,8 +144,8 @@ def bm25_retrieve(
             q = q.filter(DocumentChunk.domain == domain)
         if jurisdiction:
             q = q.filter(
-                (DocumentChunk.jurisdiction == jurisdiction) |
-                (DocumentChunk.jurisdiction.is_(None))
+                (DocumentChunk.jurisdiction == jurisdiction)
+                | (DocumentChunk.jurisdiction.is_(None))
             )
 
         # Limit corpus for performance — take recent + relevant 2000 chunks
@@ -160,7 +162,9 @@ def bm25_retrieve(
         scores = bm25.get_scores(query_tokens)
 
         # Get top_k indices
-        top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_k]
+        top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[
+            :top_k
+        ]
 
         results = []
         for idx in top_indices:
