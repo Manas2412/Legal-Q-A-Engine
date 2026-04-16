@@ -8,7 +8,7 @@ from db.session import get_db, init_db
 from db.models import DocumentChunk, LawDomain, CourtLevel, COURT_AUTHORITY_WEIGHTS
 from ingestion.loader import load_document
 from ingestion.chunker import chunk_document
-from ingestion.embedder import embed_chunks
+from ingestion.embedder import embed_batch
 
 
 # ─────────────────────────────────────────────────────────────
@@ -61,7 +61,7 @@ def ingest_file(file_path: str, force: bool = False) -> int:
     print(f"[Ingest] Loading: {path.name}")
 
     # Check if already ingested
-    with get_db as db:
+    with get_db() as db:
         existing = db.query(DocumentChunk).filter_by(source_file=str(path)).first()
         if existing and not force:
             print(f"[Ingest] Already ingested (use --force to re-ingest): {path.name}")
@@ -74,7 +74,7 @@ def ingest_file(file_path: str, force: bool = False) -> int:
     # Load
     raw_doc = load_document(path)
     print(
-        f"[Inges] Title: {raw_doc.inferred_title} | Act: {raw_doc.inferred_act} | Year: {raw_doc.inferred_year}"
+        f"[Ingest] Title: {raw_doc.inferred_title} | Act: {raw_doc.inferred_act} | Year: {raw_doc.inferred_year}"
     )
 
     # Chunk
@@ -90,7 +90,7 @@ def ingest_file(file_path: str, force: bool = False) -> int:
 
     # Store
     stored = 0
-    with get_db as db:
+    with get_db() as db:
         for chunk, embedding in zip(chunks, embeddings):
             if embedding is None:
                 print(f"[Ingest] Skipping chunk due to embedding failure")

@@ -28,8 +28,8 @@ def embed_text(text: str, retries: int = 3) -> Optional[list[float]]:
                 print(f"[Embedder] Failed after {retries} attempts: {exec}")
                 return None
             
-def embed_match(texts: list[str], batch_size: int = 8) -> list[Optional[list[float]]]:
-    """Enbed a list of text in batches"""
+def embed_batch(texts: list[str], batch_size: int = 8) -> list[Optional[list[float]]]:
+    """Embed a list of text in batches"""
     results: list[Optional[list[float]]] = []
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]

@@ -17,7 +17,7 @@ def init_db() -> None:
     """Create all tables and enable pgvector extension."""
     with engine.connect() as conn:
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-        conn.comit()
+        conn.commit()
     Base.metadata.create_all(bind=engine)
     
     
@@ -26,7 +26,7 @@ def get_db() -> Session:
     db = SessionLocal()
     try:
         yield db
-        db.comit()
+        db.commit()
     except Exception:
         db.rollback()
         raise
