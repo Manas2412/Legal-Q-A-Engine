@@ -1,4 +1,3 @@
-from asyncio import timeout
 from __future__ import annotations
 import json
 import httpx
