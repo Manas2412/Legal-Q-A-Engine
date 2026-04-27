@@ -47,7 +47,7 @@ def retrieve_similar_memories(
     top_k = top_k or settings.semantic_memory_top_k
     query_embedding = embed_text(query)
     
-    if query_embedding in None:
+    if query_embedding is None:
         return []
     
     db = SessionLocal()
@@ -79,7 +79,7 @@ def retrieve_similar_memories(
                 "similarity": round(float(row.similarity), 4)
             }
             for row in rows
-            if row.similarity > 0.65    # Only include geneuinely similar memories
+            if row.similarity > 0.65    # Only include genuinely similar memories
         ]
         
     finally:

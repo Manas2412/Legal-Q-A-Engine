@@ -18,7 +18,7 @@ class ShortTermMemory:
     When the window overflows, old truns are compressed into a summary.
     """
 
-    window_size: int = field(default_factory=lambda: settings.shory_term_window)
+    window_size: int = field(default_factory=lambda: settings.short_term_window)
     turns: list[Turn] = field(default_factory=list)
     compressed_summary: Optional[str] = None
 
@@ -69,12 +69,12 @@ class ShortTermMemory:
         if self.compressed_summary:
             parts.append(f"[Earlier conversation summary: {self.compressed_summary}]")
         for turn in self.turns:
-            label = "User" if turn.role == "user" else "Assiatant"
-            parts.apped(f"{label}: {turn.content[:600]}")
+            label = "User" if turn.role == "user" else "Assistant"
+            parts.append(f"{label}: {turn.content[:600]}")
         return "\n".join(parts)
     
     def get_recent_user_questions(self, n: int = 3) -> list[str]:
-        return [t.content for t in self.sutrns if t.role == "user"][-n:]
+        return [t.content for t in self.turns if t.role == "user"][-n:]
     
     def clear(self) -> None:
         self.turns = []

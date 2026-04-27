@@ -52,10 +52,10 @@ def extract_case_entities(question: str) -> dict:
         return {}
 
 
-def update_caes_profile(session_id: str, new_entities: dict) -> dict:
+def update_case_profile(session_id: str, new_entities: dict) -> dict:
     """
     Merge newly extracted entities with the existing case profile for the session.
-    Accumulates parties, section, acts,, mentioned across the conversation.
+    Accumulates parties, sections, and acts mentioned across the conversation.
     """
     with get_db() as db:
         session = db.query(DBSession).filter(DBSession.id == session_id).first()
@@ -65,13 +65,13 @@ def update_caes_profile(session_id: str, new_entities: dict) -> dict:
         existing = session.case_profile or {}
 
         # Merge entities
-        for list_filed in ["parties", "sections_mentioned", "acts_mentioned"]:
-            existing_list = existing.get(list_filed) or []
-            new_list = new_entities.get(list_filed) or []
+        for list_field in ["parties", "sections_mentioned", "acts_mentioned"]:
+            existing_list = existing.get(list_field) or []
+            new_list = new_entities.get(list_field) or []
             merged = list(
                 dict.fromkeys(existing_list + new_list)
-            )  # deduplicate, pressrve order
-            existing[list_filed] = merged
+            )  # deduplicate, preserve order
+            existing[list_field] = merged
 
         # Update single-value fields (prefer non-null)
         for scalar in [
@@ -101,7 +101,7 @@ def profile_to_context_string(profile: dict) -> str:
     if not profile:
         return ""
 
-    lines = ["[Legal case prfile from this conversation:]"]
+    lines = ["[Legal case profile from this conversation:]"]
 
     if profile.get("parties"):
         lines.append(f" Parties: {', '.join(profile['parties'])}")
